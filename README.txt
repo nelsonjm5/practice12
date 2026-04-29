@@ -1,25 +1,31 @@
-Practice 11 Deployment
+Practice 12 Deployment Documentation
 
 Platform Used:
 Render
 
-Deployment Process:
-For this assignment, I deployed my Node.js/Express application using Render. I first combined my front-end files from the Project3Dark folder with the Express server files from my Practice10 project. The final project folder included index.html, styles.css, dashboard_project.js, server.js, package.json, and package-lock.json.
+How I Modified the Code:
+I modified my Node.js/Express application to use an environment variable named GREETING. In server.js, I added a greeting variable that reads from process.env.GREETING. If the GREETING variable is not set, the app uses a default message instead.
 
-Before deploying, I made sure the server.js file used process.env.PORT so the app could run on Render's assigned port. I also made sure package.json included a start script:
+The main code change was:
 
-"start": "node server.js"
+const greeting = process.env.GREETING || "Hello from your deployed app!";
 
-After confirming the app worked locally with npm install and npm start, I uploaded the project files to a GitHub repository. Then I created a new Web Service on Render, connected the GitHub repository, and used the following settings:
+Then I updated the /api/message route so it returns that greeting value as JSON:
 
-Build Command: npm install
-Start Command: npm start
-Instance Type: Free
+app.get("/api/message", (req, res) => {
+  res.json({ message: greeting });
+});
 
-Once Render finished building and deploying the app, I opened the live Render URL in my browser to verify that the application was running online.
+Which Platform I Used:
+I used Render for deployment. I chose Render because my AWS Elastic Beanstalk setup had permission issues, and the assignment allowed Render as an alternative platform.
+
+How I Set the Environment Variable:
+In Render, I opened my practice12 Web Service and went to the Environment section. I added a new environment variable with the following values:
+
+Key: GREETING
+Value: Hello from Render!
+
+After saving the environment variable, I redeployed the application. Then I opened the /api/message route in my browser to make sure the JSON response reflected the environment variable.
 
 Issues Encountered:
-I originally tried to deploy the application using AWS Elastic Beanstalk. I installed the AWS CLI and EB CLI, created an IAM user, and attempted to run eb init and eb create. However, AWS kept returning permission errors, including missing permission for elasticbeanstalk:CreateStorageLocation. Even after attaching Elastic Beanstalk and administrator permissions, the AWS account still appeared to have restrictions that prevented Elastic Beanstalk from creating the needed resources.
-
-How I Addressed the Issues:
-Since the assignment allowed alternative deployment platforms, I switched from AWS Elastic Beanstalk to Render. Render was simpler for this project because it connected directly to my GitHub repository and only required the build command npm install and the start command npm start. This allowed me to successfully deploy the application and verify it using the live Render URL.
+The first issue was with AWS Elastic Beanstalk. My AWS IAM user was denied permission to create some Elastic Beanstalk resources, so I switched to Render. I also briefly saw a Cannot GET / message because the main route was not the required test route. I fixed this by going directly to /api/message, which showed the correct JSON response.
