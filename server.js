@@ -8,9 +8,11 @@ app.use(express.json());
 // This lets Express serve your HTML, CSS, and JS files
 app.use(express.static(path.join(__dirname)));
 
-// API route from Practice 10
+// Updated API route
+const greeting = process.env.GREETING || "Hello from your deployed app!";
+
 app.get("/api/message", (req, res) => {
-  res.json({ message: "Hello from your deployed AWS API!" });
+  res.json({ message: greeting });
 });
 
 // POST route from Practice 10
